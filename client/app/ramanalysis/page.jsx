@@ -27,7 +27,6 @@ const Ram = () => {
   const [value2, onChange2] = useState(new Date());
   const [dates, setdates] = useState([]);
   const [dateData, setDateData] = useState([]);
-  console.log(dateData);
 
   const [show, setShow] = useState(false);
   const [show2, setShow2] = useState(false);
@@ -51,14 +50,14 @@ const Ram = () => {
     ) {
       a.push(new Date(d).toDateString());
     }
-    console.log(a);
+
     setdates(a);
     return a;
   };
 
   const updateDateData = () => {
     let tempdata = [];
-    console.log("hello");
+
     dates.map((item) => {
       const found = filterData?.some(
         (el) => new Date(el.updatedAt).toDateString() === item
@@ -122,10 +121,11 @@ const Ram = () => {
   const notify = () => {
     toast.error(" System Overloading!");
   };
-
-  if (taskdata?.memory > 80) {
-    notify();
-  }
+  useEffect(() => {
+    if (taskdata?.memory > 80) {
+      notify();
+    }
+  }, [taskdata, filterData]);
 
   return (
     <div className="  ">

@@ -35,7 +35,8 @@ const Disk = () => {
     ["Total", 1],
   ]);
   const [dates, setdates] = useState([]);
-  const { taskdata, filterData } = useContext(AccountContext);
+  const { taskdata, filterData, sendMail, setSendMail } =
+    useContext(AccountContext);
   const [dateData, setDateData] = useState([]);
   let keys = taskdata && Object.keys(taskdata?.data);
   let values = taskdata && Object.values(taskdata?.data);
@@ -75,6 +76,24 @@ const Disk = () => {
   };
   const options3 = {
     title: keys && ` ${keys[2]}  Total Memory Usage`,
+    is3D: true,
+    pieSliceText: "none",
+    tooltip: { text: "none" },
+  };
+  const options4 = {
+    title: keys && ` ${keys[3]}  Total Memory Usage`,
+    is3D: true,
+    pieSliceText: "none",
+    tooltip: { text: "none" },
+  };
+  const options5 = {
+    title: keys && ` ${keys[4]}  Total Memory Usage`,
+    is3D: true,
+    pieSliceText: "none",
+    tooltip: { text: "none" },
+  };
+  const options6 = {
+    title: keys && ` ${keys[5]}  Total Memory Usage`,
     is3D: true,
     pieSliceText: "none",
     tooltip: { text: "none" },
@@ -158,23 +177,29 @@ const Disk = () => {
 
   const handleSubmit = (freespace, drive) => {
     if (taskdata) {
-      var templateParams = {
-        drive: drive,
-        client: taskdata?.name,
-        message:
-          "This is a kind request to Take Action on Specified Drive Before it Runs Out Of Storage",
-      };
-      alert(`${freespace} ${drive}`);
-      // emailjs
-      //   .send(
-      //     "service_xjuo98l",
-      //     "template_vw4jivf",
-      //     templateParams,
-      //     "ZjwB97wKIznKoRg2C"
-      //   )
-      //   .then((res) => {
-      //     console.log(res);
-      //   });
+      if (sendMail) {
+        var templateParams = {
+          drive: drive,
+          client: taskdata?.details?.name,
+          message:
+            "This is a kind request to Take Action on Specified Drive Before it Runs Out Of Storage",
+        };
+
+        emailjs
+          .send(
+            "service_xjuo98l",
+            "template_vw4jivf",
+            templateParams,
+            "ZjwB97wKIznKoRg2C"
+          )
+          .then((res) => {
+            console.log(res);
+            setSendMail(false);
+            setTimeout(() => {
+              setSendMail(true);
+            }, 300000);
+          });
+      }
     }
   };
 
@@ -264,7 +289,10 @@ const Disk = () => {
                   options={
                     (i === 0 && options1) ||
                     (i === 1 && options2) ||
-                    (i === 2 && options3)
+                    (i === 2 && options3) ||
+                    (i === 3 && options4) ||
+                    (i === 4 && options5) ||
+                    (i === 5 && options6)
                   }
                   width={"100%"}
                   height={"300px"}
@@ -275,7 +303,11 @@ const Disk = () => {
                   <h1 className="text-gray-600 font-semibold text-center w-full text-xl my-4 underline">
                     {(i === 0 && keys[0]) ||
                       (i === 1 && keys[1]) ||
-                      (i === 2 && keys[2])}{" "}
+                      (i === 2 && keys[2]) ||
+                      (i === 3 && keys[3]) ||
+                      (i === 4 && keys[4]) ||
+                      (i === 5 && keys[5]) ||
+                      (i === 6 && keys[6])}
                     Disk Information
                   </h1>
                   <p className="text-gray-600 font-semibold p-5">
@@ -290,7 +322,7 @@ const Disk = () => {
                   {item[1] < 45 && (
                     <button
                       className=" bg-red-500 w-full text-white z-[999999]  font-semibold p-5"
-                      onClick={handleSubmit(item[1], keys[i])}
+                      onClick={handleSubmit(item[1], keys[i], i)}
                     >
                       Caution Free Space is Less Then Specified Threshold{" "}
                       {item[1]}/45 GB

@@ -8,7 +8,7 @@ import ReactApexChart from "react-apexcharts";
 const Network = () => {
   const { taskdata, filterData } = useContext(AccountContext);
   const [ChartData, setChartData] = useState([]);
-  console.log(taskdata?.networkDets);
+
   let tempdata = [];
   taskdata?.networkDets.Ethernet.map((item) => {
     item.map((object, index) => {
@@ -16,7 +16,6 @@ const Network = () => {
         tempdata.push(object);
       }
     });
-    console.log(tempdata);
   });
 
   const options = {

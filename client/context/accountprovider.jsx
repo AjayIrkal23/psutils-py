@@ -8,27 +8,53 @@ export const AccountContext = createContext(null);
 export const Accountprovider = ({ children }) => {
   const [taskdata, settaskdata] = useState(null);
   const [filterData, setFilterData] = useState(null);
-  const [Client, setClientData] = useState(null);
+  const [client, setClient] = useState(null);
+  const [sendMail, setSendMail] = useState(true);
+  console.log(client);
 
-  const Getdata = async () => {
-    const res = await axios.get("http://localhost:8000/getdata");
+  function useInterval(callback, delay) {
+    const savedCallback = useRef();
+
+    // Remember the latest function.
+    useEffect(() => {
+      savedCallback.current = callback;
+    }, [callback]);
+
+    // Set up the interval.
+    useEffect(() => {
+      function tick() {
+        savedCallback.current();
+      }
+      if (delay !== null) {
+        let id = setInterval(tick, delay);
+        return () => clearInterval(id);
+      }
+    }, [delay]);
+  }
+
+  const Getdata = async (CLIENT) => {
+    const res = await axios.get(
+      "https://serverbackend-lz47.onrender.com/getdata"
+    );
+
     setFilterData(res?.data);
-    if (Client === null) {
+    console.log(CLIENT);
+    if (CLIENT === null) {
       settaskdata(res.data[res.data.length - 1]);
     } else {
-      console.log("select by sort hehheheheh");
+      const pos = filterData.map((e) => e.details.name).lastIndexOf(CLIENT);
+      console.log(pos);
+      settaskdata(filterData[pos]);
     }
   };
-  console.log(taskdata);
-  useState(() => {
-    setInterval(() => {
-      Getdata();
-    }, 40000);
-  }, []);
+  useInterval(() => {
+    // Your custom logic here
+    Getdata(client);
+  }, 40000);
 
   useEffect(() => {
-    Getdata();
-  }, []);
+    Getdata(client);
+  }, [client]);
 
   return (
     <AccountContext.Provider
@@ -37,6 +63,10 @@ export const Accountprovider = ({ children }) => {
         settaskdata,
         filterData,
         setFilterData,
+        setClient,
+        client,
+        sendMail,
+        setSendMail,
       }}
     >
       {children}
