@@ -2,6 +2,7 @@
 import axios from "axios";
 import { createContext, useState, useRef, useEffect } from "react";
 import React from "react";
+import { toast } from "react-hot-toast";
 
 export const AccountContext = createContext(null);
 
@@ -10,7 +11,12 @@ export const Accountprovider = ({ children }) => {
   const [filterData, setFilterData] = useState(null);
   const [client, setClient] = useState(null);
   const [sendMail, setSendMail] = useState(true);
-  console.log(client);
+  const [ramNotification, setRamNotification] = useState(true);
+  const [cpuNotification, setcpuNotification] = useState(true);
+  const [diskNotification, setdiskNotification] = useState(true);
+  const [diskEmail, setdiskEmail] = useState(true);
+  const [time, setTime] = useState(30000);
+  console.log(time);
 
   function useInterval(callback, delay) {
     const savedCallback = useRef();
@@ -32,10 +38,54 @@ export const Accountprovider = ({ children }) => {
     }, [delay]);
   }
 
+  const notify = () => {
+    if (cpuNotification) {
+      if (taskdata?.cpu > 85) {
+        toast.error(" CPU Overloading!");
+      }
+    }
+
+    if (ramNotification) {
+      if (taskdata?.memory > 85) {
+        toast.error(" Ram Overloading!");
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (ramNotification) {
+      toast.success(`Ram Notification Changed to On`);
+    } else {
+      toast.error("Ram Notification Changed to Off");
+    }
+  }, [ramNotification]);
+
+  useEffect(() => {
+    if (cpuNotification) {
+      toast.success(`Ram Notification Changed to On`);
+    } else {
+      toast.error("Ram Notification Changed to Off");
+    }
+  }, [cpuNotification]);
+
+  useEffect(() => {
+    if (diskNotification) {
+      toast.success(`Disk Caution Changed to On`);
+    } else {
+      toast.error("Disk Caution Changed to Off");
+    }
+  }, [diskNotification]);
+
+  useEffect(() => {
+    if (diskEmail) {
+      toast.success(`Alert Email Changed to On`);
+    } else {
+      toast.error("Alert Email Changed to Off");
+    }
+  }, [diskEmail]);
+
   const Getdata = async (CLIENT) => {
-    const res = await axios.get(
-      "https://serverbackend-lz47.onrender.com/getdata"
-    );
+    const res = await axios.get("http://localhost:8000/getdata");
 
     setFilterData(res?.data);
     console.log(CLIENT);
@@ -50,11 +100,19 @@ export const Accountprovider = ({ children }) => {
   useInterval(() => {
     // Your custom logic here
     Getdata(client);
-  }, 40000);
+  }, time);
 
   useEffect(() => {
-    Getdata(client);
+    toast.promise(Getdata(client), {
+      loading: "Loading",
+      success: "Client Data Fetch Successful",
+      error: "Error when fetching",
+    });
   }, [client]);
+
+  useEffect(() => {
+    notify();
+  }, [taskdata]);
 
   return (
     <AccountContext.Provider
@@ -67,6 +125,18 @@ export const Accountprovider = ({ children }) => {
         client,
         sendMail,
         setSendMail,
+        Getdata,
+        setRamNotification,
+        ramNotification,
+        cpuNotification,
+        setcpuNotification,
+        setdiskNotification,
+        diskNotification,
+        setdiskEmail,
+        diskEmail,
+
+        time,
+        setTime,
       }}
     >
       {children}

@@ -35,8 +35,15 @@ const Disk = () => {
     ["Total", 1],
   ]);
   const [dates, setdates] = useState([]);
-  const { taskdata, filterData, sendMail, setSendMail } =
-    useContext(AccountContext);
+  const {
+    taskdata,
+    filterData,
+    sendMail,
+    setSendMail,
+    diskNotification,
+    diskEmail,
+    client,
+  } = useContext(AccountContext);
   const [dateData, setDateData] = useState([]);
   let keys = taskdata && Object.keys(taskdata?.data);
   let values = taskdata && Object.values(taskdata?.data);
@@ -46,7 +53,9 @@ const Disk = () => {
 
     dates.map((item) => {
       const found = filterData?.some(
-        (el) => new Date(el.updatedAt).toDateString() === item
+        (el) =>
+          new Date(el.updatedAt).toDateString() === item &&
+          el.details.name === client
       );
 
       if (found) {
@@ -176,29 +185,31 @@ const Disk = () => {
   };
 
   const handleSubmit = (freespace, drive) => {
-    if (taskdata) {
-      if (sendMail) {
-        var templateParams = {
-          drive: drive,
-          client: taskdata?.details?.name,
-          message:
-            "This is a kind request to Take Action on Specified Drive Before it Runs Out Of Storage",
-        };
+    if (diskEmail) {
+      if (taskdata) {
+        if (sendMail) {
+          var templateParams = {
+            drive: drive,
+            client: taskdata?.details?.name,
+            message:
+              "This is a kind request to Take Action on Specified Drive Before it Runs Out Of Storage",
+          };
 
-        emailjs
-          .send(
-            "service_xjuo98l",
-            "template_vw4jivf",
-            templateParams,
-            "ZjwB97wKIznKoRg2C"
-          )
-          .then((res) => {
-            console.log(res);
-            setSendMail(false);
-            setTimeout(() => {
-              setSendMail(true);
-            }, 300000);
-          });
+          emailjs
+            .send(
+              "service_xjuo98l",
+              "template_vw4jivf",
+              templateParams,
+              "ZjwB97wKIznKoRg2C"
+            )
+            .then((res) => {
+              console.log(res);
+              setSendMail(false);
+              setTimeout(() => {
+                setSendMail(true);
+              }, 300000);
+            });
+        }
       }
     }
   };

@@ -46,7 +46,7 @@ def Send_Usage(cpu_usage,mem_usage,path_usage,windows,sysDets,processer,ram,Manu
     x['uploadSpeed']= wifi.upload() / math.pow(1024, 2)
     a['numofprocess']= numofprocess
     a['systemtype']= systemtype
-    a['family']= family
+    # a['family']= family
     x['cpu'] = cpu_usage
     x['type'] = windows
     x['systemProcess'] = processer
@@ -56,6 +56,7 @@ def Send_Usage(cpu_usage,mem_usage,path_usage,windows,sysDets,processer,ram,Manu
     x['details'] = a
     x["networkDets"] = network
     # print(f'{path_usage} is cpu memory')
+
 
     temp = {}
     for i in path_usage:
@@ -82,7 +83,7 @@ def Send_Usage(cpu_usage,mem_usage,path_usage,windows,sysDets,processer,ram,Manu
 while True:
     x =  Send_Usage(psutil.cpu_percent(),psutil.virtual_memory().percent,psutil.disk_partitions(all=False),platform.system(),platform.processor(),platform.machine(),psutil.virtual_memory().total / math.pow(1024, 3),my_system.Manufacturer,my_system.Model,my_system.Name,my_system.NumberOfProcessors,my_system.SystemType,my_system.SystemFamily, psutil.net_if_addrs())
    
-    r = requests.post('https://serverbackend-lz47.onrender.com/add',json=x)
+    r = requests.post('http://localhost:8000/add',json=x)
     print(r.text)
     time.sleep(20)
 

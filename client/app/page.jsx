@@ -7,16 +7,12 @@ import Calendar from "react-calendar";
 import SpeedoMeter from "./SpeedoMeter";
 import { AccountContext } from "../context/accountprovider";
 import Modal2 from "./Modal";
-import { ToastContainer, toast } from "react-toast";
+import { Toaster, toast } from "react-hot-toast";
 
 const HomePage = () => {
-  const notify = () => {
-    toast.error(" System Overloading!");
-  };
-
   const [value, onChange] = useState(new Date());
   const [value2, onChange2] = useState(new Date());
-  const { taskdata, filterData, setClient, client } =
+  const { taskdata, filterData, setClient, client, cpuNotification } =
     useContext(AccountContext);
   const [show, setShow] = useState(false);
   const [show2, setShow2] = useState(false);
@@ -32,25 +28,6 @@ const HomePage = () => {
     setShow(false);
     setShow2(false);
   };
-
-  const removeDublicates = () => {
-    let dubliArray = [];
-    filterData?.forEach((item, index) => {
-      if (!dubliArray.includes(item?.details?.name)) {
-        dubliArray.push(item?.details?.name);
-      }
-    });
-    console.log(dubliArray);
-    setSelectClient(dubliArray);
-  };
-
-  useEffect(() => {
-    removeDublicates();
-  }, [filterData]);
-
-  if (taskdata?.cpu > 80) {
-    notify();
-  }
 
   const chartData = {
     chart: {
@@ -94,8 +71,11 @@ const HomePage = () => {
     let tempdata = [];
 
     dates.map((item) => {
+      console.log(client);
       const found = filterData?.some(
-        (el) => new Date(el.updatedAt).toDateString() === item
+        (el) =>
+          new Date(el.updatedAt).toDateString() === item &&
+          el.details.name === client
       );
 
       if (found) {
@@ -129,27 +109,10 @@ const HomePage = () => {
 
   return (
     <div className="relative">
-      <ToastContainer position="top-center" />
       <h1 className="text-center italic font-semibold text-xl text-gray-700    ">
         Select The Date
       </h1>
       <div className="flex mt-5 md:mt-3 flex-col md:flex-row mx-auto md:space-x-6 justify-center items-center border-b-[1px] border-black/10 pb-6   ">
-        <div>
-          <div>
-            <select
-              name=""
-              className="px-4 py-2 bg-transparent rounded-md border border-black/20 shadow-md "
-              onChangeCapture={(e) => {
-                setClient(e.target.value);
-              }}
-              id=""
-            >
-              {selectClient.map((item) => (
-                <option value={item}>{item}</option>
-              ))}
-            </select>
-          </div>
-        </div>
         <div className=" flex  flex-col">
           <button
             className="px-2 py-1.5 shadow-md bg-blue-500 mb-4 rounded-md font-semibold hover:scale-105 transition-all duration-200 ease-in-out   text-white"

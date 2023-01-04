@@ -9,13 +9,14 @@ import SpeedoMeter from "../SpeedoMeter";
 import { Chart } from "react-google-charts";
 import { AccountContext } from "../../context/accountprovider";
 import Modal2 from "../Modal";
-import { ToastContainer, toast } from "react-toast";
+
+import { Toaster, toast } from "react-hot-toast";
 
 const Ram = () => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const { taskdata, filterData } = useContext(AccountContext);
+  const { taskdata, filterData, ramNotification } = useContext(AccountContext);
   const options = {
     title: "Total Memory Usage",
     is3D: true,
@@ -118,18 +119,8 @@ const Ram = () => {
     getDaysArray(value.toDateString(), value2.toDateString());
   }, [value, value2]);
 
-  const notify = () => {
-    toast.error(" System Overloading!");
-  };
-  useEffect(() => {
-    if (taskdata?.memory > 80) {
-      notify();
-    }
-  }, [taskdata, filterData]);
-
   return (
     <div className="  ">
-      <ToastContainer position="top-center" />
       <h1 className="text-center italic font-semibold text-xl text-gray-700    ">
         Select The Date
       </h1>
