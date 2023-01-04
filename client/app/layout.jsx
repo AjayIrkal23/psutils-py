@@ -6,9 +6,15 @@ import Navbar from "./Navbar";
 import SideBar from "./SideBar";
 
 import { AccountContext, Accountprovider } from "../context/accountprovider";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 
 export default function RootLayout({ children }) {
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      return;
+    }
+  }, [window]);
+
   return (
     <html>
       <head />
