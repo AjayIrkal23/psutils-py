@@ -16,6 +16,7 @@ export const Accountprovider = ({ children }) => {
   const [diskNotification, setdiskNotification] = useState(true);
   const [diskEmail, setdiskEmail] = useState(true);
   const [time, setTime] = useState(30000);
+  const audioPlayer = useRef(null);
   console.log(time);
 
   function useInterval(callback, delay) {
@@ -85,7 +86,9 @@ export const Accountprovider = ({ children }) => {
   }, [diskEmail]);
 
   const Getdata = async (CLIENT) => {
-    const res = await axios.get("http://localhost:8000/getdata");
+    const res = await axios.get(
+      "https://serverbackend-lz47.onrender.com/getdata"
+    );
 
     setFilterData(res?.data);
     console.log(CLIENT);
@@ -134,7 +137,7 @@ export const Accountprovider = ({ children }) => {
         diskNotification,
         setdiskEmail,
         diskEmail,
-
+        audioPlayer,
         time,
         setTime,
       }}

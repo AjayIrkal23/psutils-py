@@ -1,9 +1,10 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import ListComponent from "./ListComponent";
 
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
+import { AccountContext } from "../context/accountprovider";
 
 const SideBar = () => {
   const pathName = usePathname();

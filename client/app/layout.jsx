@@ -5,7 +5,8 @@ import "../styles/globals.css";
 import Navbar from "./Navbar";
 import SideBar from "./SideBar";
 
-import { Accountprovider } from "../context/accountprovider";
+import { AccountContext, Accountprovider } from "../context/accountprovider";
+import { useContext } from "react";
 
 export default function RootLayout({ children }) {
   return (
@@ -38,6 +39,7 @@ export default function RootLayout({ children }) {
               },
             }}
           />
+
           <Navbar />
           <div className="flex md:flex-row flex-col   h-full">
             <div className="md:basis-1/5 border-r-[1px] border-[black]/10 shadow-lg shadow-white   h-full">

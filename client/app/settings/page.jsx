@@ -169,8 +169,11 @@ const Settings = () => {
                     </option>
                   ))}
                 </select>
-                <p>
-                  Selected : {time == 30000 || time == 60000 ? time : time}{" "}
+                <p className="text-gray-500 italic inline-flex items-center gap-2  font-thing text-center ">
+                  Selected :{" "}
+                  {time == 30000 || time == 60000
+                    ? `${time / 1000} Seconds`
+                    : `${time / 60000} Mins`}{" "}
                 </p>
               </div>
             </div>
